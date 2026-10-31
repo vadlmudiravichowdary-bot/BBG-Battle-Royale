@@ -2,64 +2,103 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>BBG ROYALE - REAL MANS</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,maximum-scale=1.0">
+<title>BBG BATTLE ROYALE - HORIZONTAL</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#1a3d1a;overflow:hidden;font-family:Arial}
-#game{width:100vw;height:100vh;background:radial-gradient(#2d6a2d,#0f2f0f);position:relative}
-#ui{position:fixed;top:0;width:100%;background:#000;padding:8px 12px;color:#fff;display:flex;justify-content:space-between;z-index:100;font-size:13px;font-weight:bold}
-.man{position:absolute;width:36px;height:42px;display:flex;flex-direction:column;align-items:center;z-index:10}
-.head{width:18px;height:18px;border-radius:50%;border:2px solid white}
-.body{width:20px;height:22px;border-radius:6px 6px 3px 3px;margin-top:-2px;border:1px solid white;position:relative}
-.body:after{content:'';position:absolute;width:8px;height:14px;background:inherit;border:1px solid white;left:-8px;top:2px;border-radius:4px}
-.body:before{content:'';position:absolute;width:8px;height:14px;background:inherit;border:1px solid white;right:-8px;top:2px;border-radius:4px}
-.legs{width:20px;display:flex;justify-content:space-between}
-.leg{width:7px;height:10px;border-radius:0 0 3px 3px;border:1px solid white}
-.me .head{background:gold}.me .body,.me .leg{background:#ffcc00}
-.enemy .head{background:#ff4444}.enemy .body,.enemy .leg{background:#cc0000}
-.label{font-size:7px;color:white;background:rgba(0,0,0,0.7);padding:1px 3px;border-radius:3px;margin-top:1px;white-space:nowrap}
-#zone{position:absolute;border:3px dashed cyan;border-radius:50%;pointer-events:none;box-shadow:0 0 80px rgba(0,255,255,0.2) inset}
-.loot{width:24px;height:24px;background:cyan;border:2px solid white;position:absolute;display:flex;align-items:center;justify-content:center;font-size:14px}
-.bullet{width:6px;height:12px;background:yellow;border-radius:3px;position:absolute;box-shadow:0 0 6px yellow}
-#controls{position:fixed;bottom:0;width:100%;height:150px;display:flex;justify-content:space-between;padding:15px;z-index:100}
-#joy{width:110px;height:110px;background:rgba(255,255,255,0.15);border-radius:50%;border:2px solid white;position:relative}
-#stick{width:44px;height:44px;background:gold;border-radius:50%;position:absolute;left:33px;top:33px;box-shadow:0 0 10px gold}
-#fire{width:85px;height:85px;background:radial-gradient(#ff2222,#880000);border-radius:50%;border:3px solid white;color:white;font-size:28px;display:flex;align-items:center;justify-content:center}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;touch-action:none}
+#rotate{position:fixed;inset:0;background:#000;color:white;z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;font-family:Arial;font-size:20px}
+@media (orientation:portrait){#rotate{display:flex} #main{display:none}}
+#main{width:100vw;height:100vh;background:#2b5a2b;position:relative;overflow:hidden}
+#map{width:2000px;height:2000px;background:
+radial-gradient(circle at 30% 30%,#3a7a3a 0%,#2b5a2b 40%,#1a3a1a 100%);
+position:absolute;left:-500px;top:-500px}
+.road{position:absolute;background:#444;border:2px solid #333}
+.building{position:absolute;background:linear-gradient(#777,#444);border:3px solid #222;box-shadow:4px 4px 10px rgba(0,0,0,0.8)}
+.building:after{content:'';position:absolute;inset:6px;background:rgba(0,0,0,0.3)}
+.tree{position:absolute;width:40px;height:40px;background:radial-gradient(#1a8a1a,#0a4a0a);border-radius:50%;border:2px solid #052a05}
+.char{position:absolute;width:48px;height:48px;z-index:50;display:flex;flex-direction:column;align-items:center}
+.char-icon{font-size:36px;filter:drop-shadow(0 2px 4px black);line-height:36px}
+.char-gun{font-size:16px;margin-top:-10px;transform:rotate(0deg)}
+.char-name{font-size:9px;background:black;color:white;padding:1px 5px;border-radius:10px;margin-top:2px;font-weight:bold;border:1px solid gold}
+.me .char-name{background:gold;color:black}
+.enemy .char-icon{filter:drop-shadow(0 2px 4px black) hue-rotate(0deg)}
+#ui{position:fixed;top:0;left:0;right:0;height:50px;background:linear-gradient(black,transparent);display:flex;justify-content:space-between;align-items:center;padding:0 20px;color:white;z-index:100;font-weight:bold}
+#zone{position:absolute;border:4px dashed cyan;border-radius:50%;pointer-events:none;box-shadow:0 0 0 2000px rgba(0,100,255,0.15) inset;z-index:5}
+.bullet{position:absolute;width:12px;height:4px;background:yellow;box-shadow:0 0 8px orange;border-radius:2px;z-index:60}
+.loot{position:absolute;width:36px;height:36px;background:linear-gradient(cyan,#0088ff);border:2px solid white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:20;box-shadow:0 0 12px cyan}
+#controls{position:fixed;bottom:0;left:0;right:0;height:110px;display:flex;justify-content:space-between;align-items:center;padding:0 20px;z-index:100}
+#joyBase{width:90px;height:90px;background:rgba(255,255,255,0.15);border-radius:50%;border:2px solid rgba(255,255,255,0.6);position:relative}
+#joyStick{width:38px;height:38px;background:gold;border:2px solid white;border-radius:50%;position:absolute;left:26px;top:26px;box-shadow:0 0 12px gold}
+#btns{display:flex;gap:15px}
+.btn{width:70px;height:70px;border-radius:50%;border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;font-weight:bold}
+#fire{background:radial-gradient(#ff3333,#990000);box-shadow:0 0 15px red}
+#aim{background:radial-gradient(#33ff33,#009900)}
 </style>
 </head>
 <body>
-<div id="ui"><div>🔫 BBG REAL MANS</div><div id="alive">ALIVE:100</div><div id="kills">KILLS:0</div></div>
-<div id="game"><div id="zone"></div></div>
-<div id="controls"><div id="joy"><div id="stick"></div></div><div id="fire">🔥</div></div>
+<div id="rotate"><div style="font-size:60px">📱➡️📱</div><div>PHONE NI HORIZONTAL GA TIPPU RA!</div></div>
+<div id="main">
+<div id="map"></div>
+<div id="ui"><div>🔫 BBG ROYALE - HORIZONTAL</div><div id="alive">ALIVE: 50</div><div id="kills">KILLS: 0</div></div>
+<div id="controls">
+<div id="joyBase"><div id="joyStick"></div></div>
+<div id="btns"><div class="btn" id="aim">🎯</div><div class="btn" id="fire">💥</div></div>
+</div>
+</div>
 <script>
-let game=document.getElementById('game'),zone=document.getElementById('zone');
-let aliveEl=document.getElementById('alive'),killsEl=document.getElementById('kills');
-let px=innerWidth/2,py=innerHeight/2,kills=0,alive=100,jx=0,jy=0,active=false;
-let enemies=[],bullets=[],loots=[];let zR=600,zX=innerWidth/2,zY=innerHeight/2;
-function createMan(type,x,y,name){
-let m=document.createElement('div');m.className='man '+type;
-m.innerHTML=`<div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div><div class="label">${name}</div>`;
-m.x=x;m.y=y;m.style.left=x+'px';m.style.top=y+'px';game.appendChild(m);return m;
+let map=document.getElementById('map'),main=document.getElementById('main'),aliveEl=document.getElementById('alive'),killsEl=document.getElementById('kills');
+let px=1000,py=1000,kills=0,alive=50,jx=0,jy=0,angle=-90;
+let enemies=[],bullets=[];
+
+// CREATE REAL MAP - ROADS + BUILDINGS
+function addRoad(x,y,w,h){let d=document.createElement('div');d.className='road';d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';map.appendChild(d)}
+function addBuilding(x,y,w,h){let d=document.createElement('div');d.className='building';d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';map.appendChild(d)}
+function addTree(x,y){let d=document.createElement('div');d.className='tree';d.style.left=x+'px';d.style.top=y+'px';map.appendChild(d)}
+addRoad(0,950,2000,100);addRoad(950,0,100,2000);
+for(let i=0;i<12;i++)addBuilding(600+Math.random()*800,600+Math.random()*800,80+Math.random()*80,80+Math.random()*80);
+for(let i=0;i<30;i++)addTree(Math.random()*2000,Math.random()*2000);
+
+let zone=document.createElement('div');zone.id='zone';zone.style.left='500px';zone.style.top='500px';zone.style.width='1000px';zone.style.height='1000px';map.appendChild(zone);
+
+function createChar(type,x,y,name,icon){
+let d=document.createElement('div');d.className='char '+type;
+d.innerHTML=`<div class="char-icon">${icon}</div><div class="char-gun">🔫</div><div class="char-name">${name}</div>`;
+d.x=x;d.y=y;d.hp=type=='me'?100:3;d.style.left=x+'px';d.style.top=y+'px';map.appendChild(d);return d;
 }
-let player=createMan('me',px,py,'BBG');
-function updZone(){zone.style.left=zX-zR+'px';zone.style.top=zY-zR+'px';zone.style.width=zR*2+'px';zone.style.height=zR*2+'px'}updZone();
-for(let i=0;i<12;i++){let e=createMan('enemy',Math.random()*innerWidth,Math.random()*innerHeight,'ENEMY '+i);e.hp=3;enemies.push(e)}
-for(let i=0;i<6;i++){let l=document.createElement('div');l.className='loot';l.innerText='📦';l.x=Math.random()*innerWidth;l.y=Math.random()*innerHeight;l.style.left=l.x+'px';l.style.top=l.y+'px';loots.push(l);game.appendChild(l)}
-let joy=document.getElementById('joy'),stick=document.getElementById('stick'),fireBtn=document.getElementById('fire');
-joy.addEventListener('touchstart',()=>active=true);
-joy.addEventListener('touchmove',e=>{let r=joy.getBoundingClientRect();let x=e.touches[0].clientX-r.left-55,y=e.touches[0].clientY-r.top-55;let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35}stick.style.left=33+x+'px';stick.style.top=33+y+'px';jx=x/35;jy=y/35});
-joy.addEventListener('touchend',()=>{active=false;stick.style.left='33px';stick.style.top='33px';jx=0;jy=0});
+let player=createChar('me',px,py,'BBG','🧑‍🎤');
+let icons=['🥷','👨‍✈️','🧑‍🚀','👹','🤖','👾','🧟','👨‍🔧'];
+for(let i=0;i<18;i++){let e=createChar('enemy',600+Math.random()*800,600+Math.random()*800,'E'+i,icons[Math.floor(Math.random()*icons.length)]);enemies.push(e)}
+for(let i=0;i<10;i++){let l=document.createElement('div');l.className='loot';l.innerText=['🔫','🛡️','💊','🪖','🎒'][i%5];l.x=700+Math.random()*600;l.y=700+Math.random()*600;l.style.left=l.x+'px';l.style.top=l.y+'px';map.appendChild(l)}
+
+let joyBase=document.getElementById('joyBase'),joyStick=document.getElementById('joyStick'),fireBtn=document.getElementById('fire');
+joyBase.addEventListener('touchmove',e=>{
+let r=joyBase.getBoundingClientRect();let x=e.touches[0].clientX-r.left-45;let y=e.touches[0].clientY-r.top-45;
+let d=Math.hypot(x,y);if(d>28){x=x/d*28;y=y/d*28}
+joyStick.style.left=26+x+'px';joyStick.style.top=26+y+'px';jx=x/28;jy=y/28;
+if(Math.hypot(jx,jy)>0.2){angle=Math.atan2(jy,jx)*180/Math.PI}
+},{passive:false});
+joyBase.addEventListener('touchend',()=>{joyStick.style.left='26px';joyStick.style.top='26px';jx=0;jy=0});
 fireBtn.addEventListener('touchstart',shoot);
-function shoot(){let b=document.createElement('div');b.className='bullet';b.x=px+15;b.y=py+10;b.vx=jx*10|| (Math.random()-.5)*2;b.vy=jy*10|| -12;if(Math.hypot(b.vx,b.vy)<3){b.vx=(Math.random()-.5)*4;b.vy=-10}game.appendChild(b);bullets.push(b);setTimeout(()=>{b.remove();bullets=bullets.filter(x=>x!=b)},1200)}
+
+function shoot(){
+let b=document.createElement('div');b.className='bullet';
+b.x=px+20;b.y=py+18;b.vx=Math.cos(angle*Math.PI/180)*14;b.vy=Math.sin(angle*Math.PI/180)*14;
+b.style.left=b.x+'px';b.style.top=b.y+'px';b.style.transform=`rotate(${angle}deg)`;map.appendChild(b);bullets.push(b);
+setTimeout(()=>{b.remove();bullets=bullets.filter(x=>x!=b)},1200);
+}
+
+function updateCamera(){
+let cx=innerWidth/2-px,cy=innerHeight/2-py;
+map.style.transform=`translate(${cx}px,${cy}px)`;
+}
+
 function loop(){
-px+=jx*6;py+=jy*6;px=Math.max(0,Math.min(innerWidth-36,px));py=Math.max(0,Math.min(innerHeight-50,py));player.style.left=px+'px';player.style.top=py+'px';
-zR-=0.12;updZone();
-enemies.forEach(e=>{e.x+=(px-e.x)*0.008+(Math.random()-.5)*1.2;e.y+=(py-e.y)*0.008+(Math.random()-.5)*1.2;e.style.left=e.x+'px';e.style.top=e.y+'px'});
-bullets.forEach(b=>{b.x+=b.vx;b.y+=b.vy;b.style.left=b.x+'px';b.style.top=b.y+'px';enemies.forEach(en=>{if(Math.hypot(b.x-en.x,b.y-en.y)<28){en.hp--;b.remove();bullets=bullets.filter(x=>x!=b);if(en.hp<=0){en.remove();enemies=enemies.filter(x=>x!=en);kills++;alive--;killsEl.innerText='KILLS:'+kills;aliveEl.innerText='ALIVE:'+alive}}})});
-loots.forEach(l=>{if(Math.hypot(px-l.x,py-l.y)<30){l.remove();loots=loots.filter(x=>x!=l)}});
-requestAnimationFrame(loop);
-}loop();
-setInterval(()=>{if(alive>1&&enemies.length>1){let r=enemies[Math.floor(Math.random()*enemies.length)];if(r){r.remove();enemies=enemies.filter(x=>x!=r);alive--;aliveEl.innerText='ALIVE:'+alive}}},1800);
-</script>
-</body>
-</html>
+px+=jx*7;py+=jy*7;px=Math.max(200,Math.min(1800,px));py=Math.max(200,Math.min(1800,py));
+player.x=px;player.y=py;player.style.left=px+'px';player.style.top=py+'px';
+player.querySelector('.char-gun').style.transform=`rotate(${angle}deg)`;
+player.style.transform=`rotate(0deg)`;
+updateCamera();
+enemies.forEach(e=>{let dx=px-e.x,dy=py-e.y;if(Math.hypot(dx,dy)<350){e.x+=dx*0.01;e.y+=dy*0.01;e.style.left=e.x+'px';e.style.top=e.y+'px'}});
+bullets.forEach(b=>{
+b.x+=b.vx;b.y
