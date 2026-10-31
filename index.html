@@ -1,1 +1,116 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BBG Battle Royale</title><style>body{margin:0;background:#0f1a2e;overflow:hidden;color:white;font-family:Arial}#ui{position:fixed;top:0;width:100%;padding:10px;display:flex;justify-content:space-between;background:rgba(0,0,0,0.8);border-bottom:3px solid gold;font-weight:bold} #player{width:40px;height:40px;background:gold;border-radius:50%;position:absolute;border:3px solid white;box-shadow:0 0 15px gold}.enemy{width:32px;height:32px;background:red;border-radius:50%;position:absolute}.bullet{width:10px;height:10px;background:yellow;border-radius:50%;position:absolute}</style></head><body><div id="ui"><div>BBG ROYALE</div><div id="level">LEVEL 1</div><div id="score">SCORE:0</div></div><div id="game"><div id="player" style="left:50%;top:80%"></div></div><script>let score=0,level=1,px=innerWidth/2,py=innerHeight*0.8;let player=document.getElementById('player');function spawn(){let e=document.createElement('div');e.className='enemy';e.style.left=Math.random()*(innerWidth-40)+'px';e.style.top='-30px';document.getElementById('game').appendChild(e);let t=0;setInterval(()=>{t+=2;e.style.top=t+'px'},20)}setInterval(spawn,900);document.addEventListener('touchmove',t=>{px=t.touches[0].clientX;py=t.touches[0].clientY;player.style.left=px-20+'px';player.style.top=py-20+'px'});document.addEventListener('mousemove',e=>{px=e.clientX;py=e.clientY;player.style.left=px-20+'px';player.style.top=py-20+'px'});</script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>BBG BATTLE ROYALE - PUBG EDITION</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none}
+body{background:#1a3a1a;overflow:hidden;font-family:Arial;font-weight:bold}
+#game{width:100vw;height:100vh;position:relative;background:radial-gradient(#2d5a27,#1a3a1a);overflow:hidden}
+#player{width:32px;height:32px;background:gold;border:3px solid white;border-radius:50%;position:absolute;z-index:10;box-shadow:0 0 10px gold;display:flex;align-items:center;justify-content:center}
+#player:after{content:'BBG';font-size:8px;color:black}
+.enemy{width:28px;height:28px;background:red;border:2px solid white;border-radius:50%;position:absolute}
+#zone{border:4px dashed #00ffff;position:absolute;border-radius:50%;pointer-events:none;box-shadow:0 0 100px rgba(0,255,255,0.3) inset}
+#ui{position:fixed;top:0;left:0;right:0;background:linear-gradient(black,transparent);padding:12px;color:white;display:flex;justify-content:space-between;z-index:100}
+#controls{position:fixed;bottom:0;width:100%;height:160px;z-index:100;display:flex;justify-content:space-between;padding:20px}
+#joystick{width:100px;height:100px;background:rgba(255,255,255,0.2);border-radius:50%;border:2px solid white;position:relative}
+#stick{width:40px;height:40px;background:gold;border-radius:50%;position:absolute;left:30px;top:30px}
+#fire{width:80px;height:80px;background:radial-gradient(red,darkred);border-radius:50%;border:3px solid white;color:white;font-size:20px;display:flex;align-items:center;justify-content:center}
+.bullet{width:8px;height:8px;background:yellow;border-radius:50%;position:absolute;box-shadow:0 0 5px yellow}
+.loot{width:20px;height:20px;background:cyan;border:2px solid white;position:absolute;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0.5}}
+</style>
+</head>
+<body>
+<div id="ui">
+<div>🔫 BBG ROYALE - PUBG</div>
+<div id="alive">ALIVE: 100</div>
+<div id="kills">KILLS: 0</div>
+</div>
+<div id="game">
+<div id="zone"></div>
+<div id="player"></div>
+</div>
+<div id="controls">
+<div id="joystick"><div id="stick"></div></div>
+<div id="fire">🔥</div>
+</div>
+<script>
+let game=document.getElementById('game'),player=document.getElementById('player'),zone=document.getElementById('zone');
+let px=innerWidth/2,py=innerHeight/2,kills=0,alive=100;
+let keys={},enemies=[],bullets=[];
+let zoneX=innerWidth/2,zoneY=innerHeight/2,zoneR=500;
+player.style.left=px+'px';player.style.top=py+'px';
+zone.style.left=zoneX-zoneR+'px';zone.style.top=zoneY-zoneR+'px';zone.style.width=zoneR*2+'px';zone.style.height=zoneR*2+'px';
+
+function spawnEnemy(){
+let e=document.createElement('div');e.className='enemy';
+e.x=Math.random()*innerWidth;e.y=Math.random()*innerHeight;
+e.style.left=e.x+'px';e.style.top=e.y+'px';
+game.appendChild(e);enemies.push(e);
+}
+for(let i=0;i<20;i++)spawnEnemy();
+
+function spawnLoot(){
+let l=document.createElement('div');l.className='loot';
+l.style.left=Math.random()*innerWidth+'px';l.style.top=Math.random()*innerHeight+'px';
+game.appendChild(l);
+}
+for(let i=0;i<10;i++)spawnLoot();
+
+// Joystick
+let joy=document.getElementById('joystick'),stick=document.getElementById('stick');
+let joyActive=false,joyX=0,joyY=0;
+joy.addEventListener('touchstart',e=>{joyActive=true});
+joy.addEventListener('touchmove',e=>{
+let r=joy.getBoundingClientRect();
+let x=e.touches[0].clientX - r.left - 50;
+let y=e.touches[0].clientY - r.top - 50;
+let d=Math.sqrt(x*x+y*y);
+if(d>35){x=x/d*35;y=y/d*35}
+stick.style.left=30+x+'px';stick.style.top=30+y+'px';
+joyX=x/35;joyY=y/35;
+});
+joy.addEventListener('touchend',()=>{joyActive=false;stick.style.left='30px';stick.style.top='30px';joyX=0;joyY=0});
+
+document.getElementById('fire').addEventListener('touchstart',fire);
+document.addEventListener('keydown',e=>keys[e.key]=true);
+document.addEventListener('keyup',e=>keys[e.key]=false);
+
+function fire(){
+let b=document.createElement('div');b.className='bullet';
+b.x=px;b.y=py;b.vx=(Math.random()-0.5)*10;b.vy=-10;
+b.style.left=b.x+'px';b.style.top=b.y+'px';
+game.appendChild(b);bullets.push(b);
+setTimeout(()=>{b.remove()},1000);
+}
+
+function loop(){
+if(keys['w']||keys['ArrowUp']||joyY<-0.2)py-=5+joyY*5;
+if(keys['s']||keys['ArrowDown']||joyY>0.2)py+=5+joyY*5;
+if(keys['a']||keys['ArrowLeft']||joyX<-0.2)px-=5+joyX*5;
+if(keys['d']||keys['ArrowRight']||joyX>0.2)px+=5+joyX*5;
+if(joyActive){px+=joyX*6;py+=joyY*6}
+px=Math.max(0,Math.min(innerWidth-32,px));
+py=Math.max(0,Math.min(innerHeight-32,py));
+player.style.left=px+'px';player.style.top=py+'px';
+
+// Zone shrink
+zoneR-=0.05;zone.style.width=zoneR*2+'px';zone.style.height=zoneR*2+'px';
+zone.style.left=zoneX-zoneR+'px';zone.style.top=zoneY-zoneR+'px';
+
+// Enemies move
+enemies.forEach(en=>{
+en.x+=(px-en.x)*0.005+(Math.random()-0.5)*2;
+en.y+=(py-en.y)*0.005+(Math.random()-0.5)*2;
+en.style.left=en.x+'px';en.style.top=en.y+'px';
+});
+
+requestAnimationFrame(loop);
+}
+loop();
+setInterval(()=>{if(alive>1){alive--;document.getElementById('alive').innerText='ALIVE: '+alive}},2000);
+</script>
+</body>
+</html>
